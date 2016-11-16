@@ -180,6 +180,14 @@ class EventDispatcher
     }
 
     /**
+     * @param SubscriberInterface $subscriber
+     * @return EventDispatcher
+     */
+    public function subscribe(SubscriberInterface $subscriber){
+        return $this->listen('', $subscriber);
+    }
+
+    /**
      * register a new listener
      *
      * @param string|Event $name the name or instance of event
