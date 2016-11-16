@@ -199,7 +199,7 @@ class EventDispatcher
                     $callback = [$listenerInterface, $callback];
                 }
 
-                EventCollector::addListener($name, $callback);
+                EventCollector::addListener($listener, $callback);
             }
 
         } else {
