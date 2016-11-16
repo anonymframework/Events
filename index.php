@@ -20,22 +20,22 @@ class MyEventListener extends \Sagi\Event\EventListener  implements SubscriberIn
     public function getSubscribedEvents()
     {
         return array(
-            'update' => 'updateItems',
-            'delete' => 'DeleteItems',
+            'updateItems',
+            'DeleteItems',
         );
     }
 
-    public function updateItems(){
-        echo 'update fired';
+    public function updateItems($id){
+
     }
 
     public function DeleteItems(){
         echo 'delete fired';
     }
 }
-$myevent = new MyEvent();
 
+$event->subscribe('event', new MyEventListener());
 
-$event->listen($myevent, new MyEventListener());
-
-var_dump($event->fire($myevent));
+$event->fire('event', [
+    'id' => 1
+]);

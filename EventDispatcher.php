@@ -105,26 +105,28 @@ class EventDispatcher
      * @param array $parameters
      * @return array
      */
-    private function resolveArrayListener(array $listeners, EventDispatch $event, array  $parameters = [])
+    private function resolveArrayListener(array $listeners, $event, array  $parameters = [])
     {
-
          $response = $this->resolveObjectListener([$listeners[0], $listeners[1]], $event, $parameters);
 
 
 
         return $response;
     }
+
     /**
-     * resolve the object listener
-     *
-     * @param \Sagi\Event\EventListener $listener
+     * @param $listener
      * @param Event $event
      * @param array $params
      * @return mixed
+     * @throws EventListenerException
      */
-    private function resolveObjectListener($listener, EventDispatch $event,array $params = [])
+    private function resolveObjectListener($listener, $event,array $params = [])
     {
-        array_push($params, $event);
+
+        if ($event instanceof EventDispatch) {
+            array_push($params, $event);
+        }
 
         $method = is_array($listener) ? $listener[1] : 'handle';
 
@@ -181,10 +183,11 @@ class EventDispatcher
 
     /**
      * @param SubscriberInterface $subscriber
+     * @param string $name
      * @return EventDispatcher
      */
-    public function subscribe(SubscriberInterface $subscriber){
-        return $this->listen('', $subscriber);
+    public function subscribe($name = '', SubscriberInterface $subscriber){
+        return $this->listen($name, $subscriber);
     }
 
     /**
@@ -207,7 +210,12 @@ class EventDispatcher
                     $callback = [$listenerInterface, $callback];
                 }
 
-                EventCollector::addListener($listener, $callback);
+                if(is_integer($listener)){
+                    EventCollector::addListener($name, $callback);
+
+                }else{
+                    EventCollector::addListener($name.'.'.$listener, $callback);
+                }
             }
 
         } else {
